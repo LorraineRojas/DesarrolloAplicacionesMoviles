@@ -127,9 +127,9 @@ public class MainActivity extends AppCompatActivity {
         mBoardButtons[move].setEnabled(false);
         mBoardButtons[move].setText(String.valueOf(player));
         if (player == TicTacToeGame.HUMAN_PLAYER)
-            mBoardButtons[move].setTextColor(Color.rgb(0,200,0));
+            mBoardButtons[move].setTextColor(Color.rgb(239,122,133));
         else
-            mBoardButtons[move].setTextColor(Color.rgb(200,0,0));
+            mBoardButtons[move].setTextColor(Color.rgb(110,68,255));
 
     }
 
