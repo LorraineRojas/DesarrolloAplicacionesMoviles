@@ -49,12 +49,33 @@
                 android:layout_height="100dp"          android:text="9"
                 android:textSize="70dp" />
         </TableRow>
+
+        <TextView android:id="@+id/information"    	           	android:layout_width="fill_parent"
+            android:layout_height="wrap_content"    			android:text="info"
+            android:gravity="center_horizontal" 		      android:layout_marginTop="20dp"
+            android:textSize="40dp"
+            android:textColor="@color/colorAccent"/>
+
+        <TextView android:id="@+id/humanwins"    	           	android:layout_width="fill_parent"
+            android:layout_height="wrap_content"    			android:text="info"
+            android:gravity="center_horizontal" 		      android:layout_marginTop="10dp"
+            android:textSize="15dp"
+            android:textColor="@color/colorText"/>
+        <TextView android:id="@+id/computerwins"    	           	android:layout_width="fill_parent"
+            android:layout_height="wrap_content"    			android:text="info"
+            android:gravity="center_horizontal" 		      android:layout_marginTop="10dp"
+            android:textSize="15dp"
+            android:textColor="@color/colorText"/>
+        <TextView android:id="@+id/ties"    	           	android:layout_width="fill_parent"
+            android:layout_height="wrap_content"    			android:text="info"
+            android:gravity="center_horizontal" 		      android:layout_marginTop="10dp"
+            android:textSize="15dp"
+            android:textColor="@color/colorText"/>
+
+
     </TableLayout>
 
-    <TextView android:id="@+id/information"    	           	android:layout_width="fill_parent"
-        android:layout_height="wrap_content"    			android:text="info"
-        android:gravity="center_horizontal" 		      android:layout_marginTop="20dp"
-        android:textSize="20dp"
-        android:textColor="@color/colorAccent"/>
+
+
 
 </LinearLayout>
