@@ -8,17 +8,18 @@
     android:background="@color/colorPrimaryDark">
 
     <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
+        android:gravity="center_vertical"
         tools:ignore="MissingConstraints">
 
         <co.edu.unal.tictactoe.BoardView
-            android:layout_marginTop="30dp"
             android:id="@+id/board"
-            android:layout_width="320dp"
-            android:layout_height="320dp" />
+            android:layout_width="270dp"
+            android:layout_height="270dp"
+            android:layout_marginLeft="30dp"
+            />
 
         <LinearLayout
             android:layout_width="fill_parent"
@@ -30,12 +31,12 @@
                 android:id="@+id/information"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
                 android:layout_marginBottom="20dp"
                 android:gravity="center_horizontal"
                 android:text="information"
-                android:textColor="@color/colorText"
-                android:textSize="20sp" />
-
+                android:textSize="20sp"
+                android:textColor="@color/colorText"/>
 
             <TableLayout
                 android:layout_width="match_parent"
@@ -44,7 +45,8 @@
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    >
 
                     <TextView
                         android:id="@+id/textView"
@@ -52,7 +54,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:text="Jugador: "
-                        android:textColor="@color/colorText" />
+                        android:textColor="@color/colorText"/>
 
                     <TextView
                         android:id="@+id/player_score"
@@ -60,12 +62,12 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="0"
-                        android:textColor="@color/colorText" />
+                        android:textColor="@color/colorText"/>
                 </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent" >
 
                     <TextView
                         android:id="@+id/textView2"
@@ -73,7 +75,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:text="Computador: "
-                        android:textColor="@color/colorText" />
+                        android:textColor="@color/colorText"/>
 
                     <TextView
                         android:id="@+id/computer_score"
@@ -81,12 +83,13 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="0"
-                        android:textColor="@color/colorText" />
+                        android:textColor="@color/colorText"/>
                 </TableRow>
 
                 <TableRow
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    >
 
                     <TextView
                         android:id="@+id/textView3"
@@ -94,7 +97,7 @@
                         android:layout_height="wrap_content"
                         android:gravity="right"
                         android:text="Empate: "
-                        android:textColor="@color/colorText" />
+                        android:textColor="@color/colorText"/>
 
                     <TextView
                         android:id="@+id/tie_score"
@@ -102,33 +105,36 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="0"
-                        android:textColor="@color/colorText" />
+                        android:textColor="@color/colorText"/>
                 </TableRow>
-            </TableLayout>
 
+            </TableLayout>
             <Button
                 android:id="@+id/newGame"
                 style="@style/Widget.AppCompat.Button"
                 android:layout_width="200sp"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
                 android:background="@color/colorSecondary"
                 android:gravity="center|center_horizontal"
+                android:layout_margin="5dp"
                 android:rotationY="0"
                 android:text="@string/nuevo_juego"
-                android:textColor="@color/colorSecondaryLight" />
+                android:textColor="@color/colorSecondaryLight"/>
 
             <Button
                 android:id="@+id/restart"
                 style="@style/Widget.AppCompat.Button"
                 android:layout_width="200sp"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
                 android:backgroundTint="@color/colorSecondary"
                 android:text="borrar"
-                android:textColor="@color/colorSecondaryLight"
-                app:srcCompat="@android:drawable/ic_menu_rotate" />
+                android:layout_margin="5dp"
+                app:srcCompat="@android:drawable/ic_menu_rotate"
+                android:textColor="@color/colorSecondaryLight"/>
         </LinearLayout>
+
+
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 

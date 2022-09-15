@@ -229,6 +229,11 @@ public class TicTacToeGame {
         return false;
     }
 
+    public char[] getBoardState() {
+        return mBoard;
+    }
 
-
+    public void setBoardState(char[] mBoard) {
+        this.mBoard = mBoard;
+    }
 }
