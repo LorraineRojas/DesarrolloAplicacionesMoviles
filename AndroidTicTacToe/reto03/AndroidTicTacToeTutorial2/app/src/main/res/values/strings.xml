@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name"> Reto 04 - TicTacToe (Menus)</string>
+    <string name="app_name"> Reto 05 - TicTacToe (Graficos y sonido)</string>
     <string name="first_human"> Empiezas tú.</string>
     <string name="turn_human"> Tu turno.</string>
     <string name="turn_computer"> Le toca a Android.</string>

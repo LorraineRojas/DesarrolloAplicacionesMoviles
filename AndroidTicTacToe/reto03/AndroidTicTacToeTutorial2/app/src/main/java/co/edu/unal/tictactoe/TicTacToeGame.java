@@ -1,5 +1,9 @@
 package co.edu.unal.tictactoe;
 
+import android.provider.MediaStore;
+import android.view.MotionEvent;
+import android.view.View;
+
 import java.util.Arrays;
 import java.util.Random;
 
@@ -13,6 +17,7 @@ import java.util.Random;
 public class TicTacToeGame {
 
     private char mBoard[] = {'1','2','3','4','5','6','7','8','9'};
+
     public static final int BOARD_SIZE = 9;
     public static final int N = 3;
 
@@ -22,7 +27,12 @@ public class TicTacToeGame {
 
     private Random mRand;
 
-    //Difficulty levels
+    public char getBoardOccupant(int i) {
+        return mBoard[i];
+
+    }
+
+    //Difficulty level
     public enum DifficultyLevel {Easy, Harder, Expert};
     private DifficultyLevel mDifficultyLevel = DifficultyLevel.Expert;
 
@@ -35,12 +45,13 @@ public class TicTacToeGame {
         this.mDifficultyLevel = mDifficultyLevel;
     }
 
-
     public TicTacToeGame() {
 
         // Seed the random number generator
         mRand = new Random();
     }
+
+
 
     private void displayBoard()	{
         System.out.println();
@@ -202,16 +213,22 @@ public class TicTacToeGame {
         return move;
 
     }
+
     public void clearBoard(){
         Arrays.fill(mBoard, OPEN_SPOT);
 
     }
 
 
-    public void setMove(char player, int location)
+    public boolean setMove(char player, int location)
     {
-        if(mBoard[location] == OPEN_SPOT) mBoard[location] = player;
+        if(mBoard[location] == OPEN_SPOT)
+        {   mBoard[location] = player;
+            return true;
+        }
+        return false;
     }
+
 
 
 }

@@ -7,11 +7,14 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -36,6 +39,37 @@ public class MainActivity extends AppCompatActivity {
     static final int DIALOG_QUIT_ID = 1;
     static final int DIALOG_ABOUT_ID = 2;
 
+    private BoardView mBoardView;
+
+    MediaPlayer mHumanMediaPlayer;
+    MediaPlayer mComputerMediaPlayer;
+
+    MediaPlayer mWinMediaPlayer;
+    MediaPlayer mLoseMediaPlayer;
+    MediaPlayer mTieMediaPlayer;
+
+    private boolean humanTurn;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mHumanMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.human_move);
+        mComputerMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.computer_move);
+        mWinMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.human_win);
+        mLoseMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.human_lose);
+        mTieMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.human_tie);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        mHumanMediaPlayer.release();
+        mComputerMediaPlayer.release();
+        mWinMediaPlayer.release();
+        mLoseMediaPlayer.release();
+        mTieMediaPlayer.release();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -92,8 +126,6 @@ public class MainActivity extends AppCompatActivity {
                         new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int item) {
                                 dialog.dismiss();   // Close dialog
-
-                                // TODO: Set the diff level of mGame based on which item was selected.
 
                                 TicTacToeGame.DifficultyLevel level = TicTacToeGame.DifficultyLevel.Expert;;
                                 switch (item){
@@ -154,17 +186,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mBoardButtons = new Button[TicTacToeGame.BOARD_SIZE];
-
-        mBoardButtons[0] = (Button) findViewById(R.id.one);
-        mBoardButtons[1] = (Button) findViewById(R.id.two);
-        mBoardButtons[2] = (Button) findViewById(R.id.three);
-        mBoardButtons[3] = (Button) findViewById(R.id.four);
-        mBoardButtons[4] = (Button) findViewById(R.id.five);
-        mBoardButtons[5] = (Button) findViewById(R.id.six);
-        mBoardButtons[6] = (Button) findViewById(R.id.seven);
-        mBoardButtons[7] = (Button) findViewById(R.id.eight);
-        mBoardButtons[8] = (Button) findViewById(R.id.nine);
+        mGame = new TicTacToeGame();
+        mBoardView = (BoardView) findViewById(R.id.board);
+        mBoardView.setGame(mGame);
+        mBoardView.setOnTouchListener(mTouchListener);
 
         mInfoTextView = (TextView) findViewById(R.id.information);
 
@@ -181,7 +206,6 @@ public class MainActivity extends AppCompatActivity {
         mTiesTextView.setText(getString(R.string.ties_count, 0));
 
 
-        mGame = new TicTacToeGame();
         mHumanCount = 0;
         mComputerCount = 0;
         mTieCount = 0;
@@ -192,81 +216,115 @@ public class MainActivity extends AppCompatActivity {
     private void startNewGame(){
 
         mGame.clearBoard();
+        mBoardView.invalidate();
         mGameOver = false;
-
-        for (int i = 0; i < mBoardButtons.length; i++) {
-            mBoardButtons[i].setText("");
-            mBoardButtons[i].setEnabled(true);
-            mBoardButtons[i].setOnClickListener(new ButtonClickListener(i));
-        }
-
+        humanTurn = true;
         mInfoTextView.setText(R.string.first_human);
 
     }
 
-    public class ButtonClickListener implements View.OnClickListener{
 
-        private int location;
-        public ButtonClickListener(int location) {
-            this.location = location;
 
+    private boolean setMove(char player, int move) {
+
+        if (mGame.setMove(player, move)) {
+            mBoardView.invalidate();   // Redraw the board
+            if(humanTurn)
+                mHumanMediaPlayer.start();
+            else
+                mComputerMediaPlayer.start();
+            checkForWinner();
+            return true;
         }
+        return false;
+    }
 
-        @Override
-        public void onClick(View view) {
-            if (mBoardButtons[location].isEnabled() && !mGameOver) {
+
+    private void checkForWinner() {
+
+        int winner = mGame.checkForWinner();
+        Handler handler = new Handler();
+
+
+        if (winner == 0)
+            mInfoTextView.setText(R.string.turn_human);
+        else if (winner == 1) {
+            mInfoTextView.setText(R.string.result_tie);
+
+            mTiesTextView.setText(getString(R.string.ties_count, mTieCount++));
+            mTieMediaPlayer.start();
+            mGameOver = true;
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    startNewGame();
+                }
+            }, 3000);
+        } else if (winner == 2) {
+            mInfoTextView.setText(R.string.result_human_wins);
+            mHumanCount++;
+            mHumanTextView.setText(getString(R.string.human_count, mHumanCount++));
+            mWinMediaPlayer.start();
+            mGameOver = true;
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    startNewGame();
+                }
+            }, 3000);
+        } else {
+            mInfoTextView.setText(R.string.result_computer_wins);
+            mComputerCount++;
+            mComputerTextView.setText(getString(R.string.android_count, mComputerCount++));
+            mLoseMediaPlayer.start();
+            mGameOver = true;
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    startNewGame();
+                }
+            }, 3000);
+        }
+    }
+
+
+    private View.OnTouchListener mTouchListener = new View.OnTouchListener(){
+
+        public boolean onTouch(View v, MotionEvent event) {
+
+            // Determine which cell was touched
+            int col = (int) event.getX() / mBoardView.getBoardCellWidth();
+            int row = (int) event.getY() / mBoardView.getBoardCellHeight();
+            int location = row * 3 + col;
+
+
+
+
+            if (!mGameOver && humanTurn && setMove(TicTacToeGame.HUMAN_PLAYER, location))	{
                 setMove(TicTacToeGame.HUMAN_PLAYER, location);
 
                 // If no winner yet, let the computer make a move
                 int winner = mGame.checkForWinner();
                 if (winner == 0) {
                     mInfoTextView.setText(R.string.turn_computer);
-                    int move = mGame.getComputerMove();
-                    setMove(TicTacToeGame.COMPUTER_PLAYER, move);
-                    winner = mGame.checkForWinner();
+                    humanTurn = false;
+
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            int move = mGame.getComputerMove();
+                            setMove(TicTacToeGame.COMPUTER_PLAYER, move);
+                            checkForWinner();
+                            humanTurn = true;
+                        }
+                    }, 2000);
+
                 }
 
-                if (winner == 0)
-                    mInfoTextView.setText(R.string.turn_human);
-                else if (winner == 1)
-                {
-                    mInfoTextView.setText(R.string.result_tie);
-
-                    mTiesTextView.setText(getString(R.string.ties_count, mTieCount++));
-
-                    mGameOver = true;
-                }
-                else if (winner == 2)
-                {
-                    mInfoTextView.setText(R.string.result_human_wins);
-                    mHumanCount++;
-                    mHumanTextView.setText(getString(R.string.human_count, mHumanCount++));
-
-                    mGameOver = true;
-                }
-                else
-                {
-                    mInfoTextView.setText(R.string.result_computer_wins);
-                    mComputerCount++;
-                    mComputerTextView.setText(getString(R.string.android_count, mComputerCount++));
-
-                    mGameOver = true;
-                }
             }
+
+            // So we aren't notified of continued events when finger is moved
+            return false;
         }
+    };
 
-    }
-
-    private void setMove(char player, int move) {
-        mGame.setMove(player, move);
-        mBoardButtons[move].setEnabled(false);
-        mBoardButtons[move].setText(String.valueOf(player));
-        if (player == TicTacToeGame.HUMAN_PLAYER)
-            mBoardButtons[move].setTextColor(Color.rgb(239, 122, 133));
-        else
-            mBoardButtons[move].setTextColor(Color.rgb(155, 93, 229));
-
-    }
 
 
 }
